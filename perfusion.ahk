@@ -8,7 +8,9 @@ fname := ".\data\Record 6_23_2022.pdf"
 fname := ".\data\20250814192513-out.txt"
 y := record(fname)
 n := 0
-demog := stRegX(y.text,"Patient Data\R",1,0,"\R+Surgery Team\R",0,&n)
+demog := y.block("\R*Patient Data\R",1,0,"\R+Surgery Team\R",1)
+team := y.block("\R+Surgery Team",1,1,"\R+Disposables\R",1)
+onlinedata := y.block("\R+Online\s+Data\R",1,0,"\R+Cardioplegia\s+Values\R",1)
 
 /*	====================================================================================
  */
@@ -46,6 +48,20 @@ Class record
 		this.text := txtIn
 		; FileDelete(this.file.fOut)
 	}
+
+	/*	Get a block using stRegX
+	 *		BS = begin string
+	 *		BO = position from start of haystack
+	 *		BT = trim BS, true or false
+	 *		ES = end string
+	 *		ET = trim ES, true or false
+	 *		N  = var for next offset
+	 */
+	block(BS:="",BO:=1,BT:=0,ES:="",ET:=0,&N:=0) {
+		res := stRegX(this.text,BS,BO,BT,ES,ET,&N)
+		return res
+	}
+
 }
 
 cleanspace(&txt) {
