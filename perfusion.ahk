@@ -23,7 +23,7 @@ Class record
 			this.exe := ".\includes\pdftotext.exe"
 			this.opts := "-table -eol unix -nopgbrk -margint 108 -marginb 90"
 
-			this.readPDF(fileIn)
+			this.readFile(fileIn)
 
 			return this
 		} else {
@@ -31,11 +31,16 @@ Class record
 		}
 	}
 
-	readPDF(fileIn) {
+	readFile(fileIn) {
+		if (this.file.ext="txt") {
+			this.text := FileRead(fileIn)
+			return
+		}
 		RunWait(this.exe " " this.opts " `"" this.file.fName "`" " this.file.fOut , this.file.path,"Hide")
 		txtIn := FileRead(this.file.path "\" this.file.fOut)
 		txtIn := StrReplace(txtIn,"`n`n","`n")
 		FileAppend(txtIn,this.file.path "\" A_Now "-out.txt")
+		this.text := txtIn
 		; FileDelete(this.file.fOut)
 	}
 }
