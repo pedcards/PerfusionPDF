@@ -63,11 +63,11 @@ Class record
 		return res
 	}
 
+	getOnlineData(txt) {
 	/*	Parse txt block for Online Data fields
 	 *	After header, scan for column labels and cell coords
 	 *	Read each cell
 	 */
-	getOnlineData(txt) {
 		/*	First put all lines into an array
 		*/
 		txtarray := []
@@ -93,9 +93,9 @@ Class record
 			}
 		}
 
+		getHeaders(idx) {
 		/*	Get column names and X coords
 		*/
-		getHeaders(idx) {
 			hdrIdx := idx+1																; Header is first line after "Online Data"
 			line := txtarray[hdrIdx]
 			line := RegExReplace(line,"  P  "," P   ")									; Adjust P in headers
@@ -125,9 +125,9 @@ Class record
 			}
 		}
 
+		findHeaders(txt) {
 		/*	Match position of  first char after "\s\s"
 		*/
-		findHeaders(txt) {
 			n := 0
 			res := []
 			loop {
@@ -140,9 +140,9 @@ Class record
 			return res
 		}
 
+		readRow(txt,colx) {
 		/*	Return array of chunks from colx
 		*/
-		readRow(txt,colx) {
 			res := Map()
 			for key,val in colx {
 				x1 := colx[key]
