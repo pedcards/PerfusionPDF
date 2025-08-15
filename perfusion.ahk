@@ -11,6 +11,7 @@ n := 0
 demog := y.block("\R*Patient Data\R",1,0,"\R+Surgery Team\R",1)
 team := y.block("\R+Surgery Team",1,1,"\R+Disposables\R",1)
 onlinedata := y.block("\R+Online\s+Data\R",1,0,"\R+Cardioplegia\s+Values\R",1)
+y.getOnlineData(onlinedata)
 
 /*	====================================================================================
  */
@@ -62,6 +63,99 @@ Class record
 		return res
 	}
 
+	/*	Parse txt block for Online Data fields
+	 *	After header, scan for column labels and cell coords
+	 *	Read each cell
+	 */
+	getOnlineData(txt) {
+		/*	First put all lines into an array
+		*/
+		txtarray := []
+		loop parse txt, "`n" {
+			txtarray.Push(A_LoopField)
+		}
+
+		/*	Read each line in sequence
+		 *	"Online Data" triggers column rescan
+		 *	"Time" should always be first column
+		 *	Look ahead for time-contaning line,
+		 *	may need to concat time + AM/PM lines
+		 *	Store as timearray, objects indexed to timestamp	
+		 */
+		timearray := []
+		for idx in txtarray
+		{
+			txtline := txtarray[A_Index]
+			if (txtline~="Online\s+Data") {												; Line is Online Data
+				cols := getHeaders(A_Index)
+				A_Index := A_Index + cols.height
+				continue
+			}
+		}
+
+		/*	Get column names and X coords
+		*/
+		getHeaders(idx) {
+			hdrIdx := idx+1																; Header is first line after "Online Data"
+			line := txtarray[hdrIdx]
+			line := RegExReplace(line,"  P  "," P   ")									; Adjust P in headers
+			colx := findHeaders(line)													; Get positions of first row of header
+			
+			header := Map()
+			loop 6 {																	; Look ahead next 6 lines
+				row := A_Index
+				x := readRow(txtarray[idx+row],colx)
+				if (x[1]~="^\d{1,2}:\d{2}") {											; Until finds time string in first cell
+					for key in header {
+						tx := header[key]
+						cleanspace(&tx)
+						tx := RegExReplace(tx,"(\[.*?\])")
+						header[key] := Trim(tx)
+					}
+					return {hdr:header,col:colx,height:row-1}
+				}
+				for key,val in x {														; Concatenate lines of header
+					tx := x[key]
+					if (row=1) {
+						header[key] := tx
+					} else {
+						header[key] .= tx
+					}
+				}
+			}
+		}
+
+		/*	Match position of  first char after "\s\s"
+		*/
+		findHeaders(txt) {
+			n := 0
+			res := []
+			loop {
+				n := RegExMatch(txt,"^\S|(?<=\s\s)\S",&match,n+1)
+				if !n {
+					break
+				}
+				res.Push(match.pos)
+			}
+			return res
+		}
+
+		/*	Return array of chunks from colx
+		*/
+		readRow(txt,colx) {
+			res := Map()
+			for key,val in colx {
+				x1 := colx[key]
+				ln := (key<colx.length) 
+					? colx[key+1]-x1 
+					: StrLen(txt)-x1+1
+				tx := SubStr(txt,x1,ln)
+				cleanspace(&tx)
+				res[key] := trim(tx)
+			}
+			return res
+		}
+	}
 }
 
 cleanspace(&txt) {
