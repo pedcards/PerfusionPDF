@@ -57,4 +57,5 @@ cleanspace(&txt) {
 }
 
 #Include includes
-#include strx2.ahk
+#Include strx2.ahk
+#Include Peep.v2.ahk
