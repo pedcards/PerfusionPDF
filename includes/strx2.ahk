@@ -40,18 +40,24 @@ xStr(H, C:=0, B:="", E:="", BO:=1, EO:=0, BI:=1, EI:=1, BT:=0, ET:=0) {
 
 	h = Haystack
 	BS = beginning string
-	BO = beginning offset
+	BO = beginning offset, start position in haystack
 	BT = beginning trim, TRUE or FALSE
 	ES = ending string
 	ET = ending trim, TRUE or FALSE
 	N = variable for next offset
 */
-stRegX(h,BS:="",BO:=1,BT:=0, ES:="",ET:=0, &N:="") {
+stRegX(h,BS:="",BO:=1,BT:=0, ES:="",ET:=0, &N:=0) {
 	rem:="[PimsxADJUXPSC(\`n)(\`r)(\`a)]+\)"
 	pos0 := RegExMatch(h, BS~=rem ? "im" BS : "im)" BS, &bPat, BO<1 ? 1 : BO)
-	pos1 := RegExMatch(h, ES~=rem ? "im" ES : "im)" ES, &ePat, pos0+bPat.len)
-	N := pos1+((ET) ? 0 : ePat.len)
-	return substr(h,pos0+((BT) ? bPat.len : 0), N-pos0-bPat.len)
+	if (pos0=0) {
+		return false
+	}
+	pos1 := RegExMatch(h, ES~=rem ? "im" ES : "im)" ES, &ePat, pos0+bPat.len())
+	if (pos1=0) {
+		return false
+	}
+	N := pos1+((ET) ? 0 : ePat.len())
+	return substr(h,pos0+((BT) ? bPat.len() : 0), N-pos0-((BT) ? bPat.len() : 0))
 }
 		
 /*	StrX for V2
