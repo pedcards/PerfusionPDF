@@ -5,7 +5,10 @@
 #Requires AutoHotkey v2
 
 fname := ".\data\Record 6_23_2022.pdf"
+fname := ".\data\20250814192513-out.txt"
 y := record(fname)
+n := 0
+demog := stRegX(y.text,"Patient Data\R",1,0,"\R+Surgery Team\R",0,&n)
 
 /*	====================================================================================
  */
