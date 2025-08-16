@@ -232,7 +232,7 @@ Class record
 			}
 			txt .= line "`n"
 		}
-		FileAppend(txt,"output.csv")
+		FileAppend(txt,this.file.fnam ".csv")
 	}
 }
 
