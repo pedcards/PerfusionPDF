@@ -6,6 +6,10 @@
 
 fname := ".\data\Record 6_23_2022.pdf"
 y := record(fname)
+if !ObjHasOwnProp(y,"file") {
+	MsgBox("Bad file","ERROR","Icon!")
+	ExitApp
+}
 demog := y.block("\R*Patient Data\R",1,0,"\R+Surgery Team\R",1)
 team := y.block("\R+Surgery Team",1,1,"\R+Disposables\R",1)
 onlinedata := y.block("\R+Online\s+Data\R",1,0,"\R+Cardioplegia\s+Values\R",1)
