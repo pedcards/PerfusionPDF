@@ -12,6 +12,7 @@ demog := y.block("\R*Patient Data\R",1,0,"\R+Surgery Team\R",1)
 team := y.block("\R+Surgery Team",1,1,"\R+Disposables\R",1)
 onlinedata := y.block("\R+Online\s+Data\R",1,0,"\R+Cardioplegia\s+Values\R",1)
 ta := y.getOnlineData(onlinedata)
+y.outputCSV(ta)
 
 /*	====================================================================================
  */
@@ -201,6 +202,39 @@ Class record
 			}
 			return {cell:cell,height:row-1}
 		}
+	}
+
+	outputCSV(obj) {
+	/*	First pass: find all field names
+	*/
+		cols := []
+		for key,val in obj {
+			for r in val {
+				if !ObjHasValue(cols,r) {
+					cols.Push(r)
+				}
+			}
+		}
+
+	/*	Second pass: generate CSV
+	*/
+		txt := "TIME"
+		for val in cols {
+			txt .= ",`"" val "`""
+		}
+		txt .= "`n"
+		for key,val in obj {
+			line := key
+			for r in cols {
+				try res := obj[key][r]
+				catch {
+					res := ""
+				}
+				line .= ",`"" res "`""
+			}
+			txt .= line "`n"
+		}
+		FileAppend(txt,"output.csv")
 	}
 }
 
