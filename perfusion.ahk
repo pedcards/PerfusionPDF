@@ -38,7 +38,7 @@ Class record
 			this.file.fNam := fNam
 			this.file.ext := ext
 			this.file.fOut := A_Now ".txt"
-			this.exe := ".\includes\pdftotext.exe"
+			this.exe := ".\pdftotext.exe"
 			this.opts := "-table -eol unix -nopgbrk -margint 108 -marginb 90"
 
 			this.readFile(fileIn)
