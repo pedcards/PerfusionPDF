@@ -171,8 +171,7 @@ Class record
 					? colx[key+1]-x1 
 					: StrLen(txt)-x1+1
 				tx := SubStr(txt,x1,ln)
-				cleanspace(&tx)
-				res[key] := trim(tx)
+				res[key] := tx
 			}
 			return res
 		}
