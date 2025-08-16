@@ -3,8 +3,14 @@
  */
 
 #Requires AutoHotkey v2
+#SingleInstance Force
 
-fname := ".\data\Record 6_23_2022.pdf"
+if (A_Args.length) {
+	fname := A_Args[1]
+} else {
+	fname := FileSelect("","data",,"*.pdf")
+}
+
 y := record(fname)
 if !ObjHasOwnProp(y,"file") {
 	MsgBox("Bad file","ERROR","Icon!")
