@@ -8,7 +8,7 @@
 if (A_Args.length) {
 	fname := A_Args[1]
 } else {
-	fname := FileSelect("","data",,"*.pdf")
+	fname := FileSelect("",A_WorkingDir "\data",,"*.pdf")
 }
 
 y := record(fname)
