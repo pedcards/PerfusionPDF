@@ -187,7 +187,7 @@ Class record
 					break
 				}
 				for key,val in x {
-					tx := x[key]
+					tx := Trim(x[key])
 					if (row=1) {
 						cell[key] := tx
 					} else {
