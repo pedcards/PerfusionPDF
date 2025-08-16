@@ -43,12 +43,11 @@ Class record
 			this.text := FileRead(fileIn)
 			return
 		}
-		RunWait(this.exe " " this.opts " `"" this.file.fName "`" " this.file.fOut , this.file.path,"Hide")
-		txtIn := FileRead(this.file.path "\" this.file.fOut)
+		RunWait(this.exe " " this.opts " `"" this.file.fName "`" `"extract.txt`"",this.file.path,"Hide")
+		txtIn := FileRead(this.file.path "\extract.txt")
 		txtIn := StrReplace(txtIn,"`n`n","`n")
-		FileAppend(txtIn,this.file.path "\" A_Now "-out.txt")
 		this.text := txtIn
-		; FileDelete(this.file.fOut)
+		FileDelete(this.file.path "\extract.txt")
 	}
 
 	/*	Get a block using stRegX
