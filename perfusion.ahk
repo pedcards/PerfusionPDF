@@ -21,6 +21,9 @@ team := y.block("\R+Surgery Team",1,1,"\R+Disposables\R",1)
 onlinedata := y.block("\R+Online\s+Data\R",1,0,"\R+Cardioplegia\s+Values\R",1)
 ta := y.getOnlineData(onlinedata)
 y.outputCSV(ta)
+MsgBox("File saved:`n" y.file.path "\" y.file.fnam ".csv","SUCCESS","Iconi")
+
+ExitApp
 
 /*	====================================================================================
  */
