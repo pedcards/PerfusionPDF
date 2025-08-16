@@ -11,7 +11,7 @@ n := 0
 demog := y.block("\R*Patient Data\R",1,0,"\R+Surgery Team\R",1)
 team := y.block("\R+Surgery Team",1,1,"\R+Disposables\R",1)
 onlinedata := y.block("\R+Online\s+Data\R",1,0,"\R+Cardioplegia\s+Values\R",1)
-y.getOnlineData(onlinedata)
+ta := y.getOnlineData(onlinedata)
 
 /*	====================================================================================
  */
@@ -82,16 +82,36 @@ Class record
 		 *	may need to concat time + AM/PM lines
 		 *	Store as timearray, objects indexed to timestamp	
 		 */
-		timearray := []
-		for idx in txtarray
+		timearray := Map()
+		while (A_Index<=txtarray.length) 
 		{
 			txtline := txtarray[A_Index]
+			if (txtline="") {
+				continue
+			}
 			if (txtline~="Online\s+Data") {												; Line is Online Data
 				cols := getHeaders(A_Index)
 				A_Index := A_Index + cols.height
 				continue
 			}
+			try {
+				row := getCels(A_Index,cols.col)
+				A_Index := A_Index + row.height
+				dt := row.cell[1]
+				try timearray[dt]
+				catch
+				{
+					timearray[dt] := Map()
+				}
+				for k,val in cols.hdr {
+					if (k=1) {
+						continue
+					}
+					timearray[dt][val] := row.cell[k]
+				}
+			}
 		}
+		return timearray
 
 		getHeaders(idx) {
 		/*	Get column names and X coords
@@ -154,6 +174,32 @@ Class record
 				res[key] := trim(tx)
 			}
 			return res
+		}
+
+		getCels(idx,colx) {
+		/*	Read cells based on header colx coords
+		*/
+			cell := Map()
+			loop 3 {																	; Lookahead 3 lines
+				row := A_Index
+				x := readRow(txtarray[idx+row-1],colx)
+				if (row>1)&&(x[1]~="^\d{1,2}:\d{2}") {
+					break
+				}
+				for key,val in x {
+					tx := x[key]
+					if (row=1) {
+						cell[key] := tx
+					} else {
+						cell[key] .= tx
+					}
+				}
+				if (x[1]~="AM|PM") {
+					cell[1] := ParseDate(cell[1]).24hms
+					break
+				}
+			}
+			return {cell:cell,height:row-1}
 		}
 	}
 }
