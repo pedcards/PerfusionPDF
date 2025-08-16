@@ -241,7 +241,7 @@ ParseDate(x) {
 	moStr := "Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec"
 	dSep := "[ \-\._/]"
 	date := {yyyy:"",mmm:"",mm:"",dd:"",date:""}
-	time := {hr:"",min:"",sec:"",days:"",ampm:"",time:""}
+	time := {hr:"",min:"",sec:"",days:"",ampm:"",time:"",24hr:""}
 
 	x := RegExReplace(x,"[,\(\)]")
 
@@ -322,6 +322,12 @@ ParseDate(x) {
 		}
 		time.ampm := trim(t[5])
 		time.time := trim(t[0])
+
+		if (time.ampm="PM")&&(time.hr<12) {
+			time.24hr := time.hr + 12
+		} else {
+			time.24hr := time.hr
+		}
 	}
 
 	return {yyyy:date.yyyy, mm:date.mm, mmm:date.mmm, dd:date.dd, date:date.date
@@ -334,7 +340,8 @@ ParseDate(x) {
 			, hr:zdigit(time.hr), min:zdigit(time.min), sec:zdigit(time.sec)
 			, ampm:time.ampm, time:time.time
 			, DHM:zdigit(time.days) ":" zdigit(time.hr) ":" zdigit(time.min) " (DD:HH:MM)" 
-			, DT:date.mm "/" date.dd "/" date.yyyy " at " zdigit(time.hr) ":" zdigit(time.min) ":" zdigit(time.sec) }
+			, DT:date.mm "/" date.dd "/" date.yyyy " at " zdigit(time.hr) ":" zdigit(time.min) ":" zdigit(time.sec)
+			, 24hms:zDigit(time.24hr) ":" zDigit(time.min) ":" zDigit(time.sec)}
 }
 
 zDigit(x) {
