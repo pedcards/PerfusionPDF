@@ -234,7 +234,7 @@ Class record
 			}
 			txt .= line "`n"
 		}
-		FileAppend(txt,this.file.fnam ".csv")
+		FileAppend(txt,this.file.path "\" this.file.fnam ".csv")
 	}
 }
 
