@@ -5,9 +5,7 @@
 #Requires AutoHotkey v2
 
 fname := ".\data\Record 6_23_2022.pdf"
-fname := ".\data\20250814192513-out.txt"
 y := record(fname)
-n := 0
 demog := y.block("\R*Patient Data\R",1,0,"\R+Surgery Team\R",1)
 team := y.block("\R+Surgery Team",1,1,"\R+Disposables\R",1)
 onlinedata := y.block("\R+Online\s+Data\R",1,0,"\R+Cardioplegia\s+Values\R",1)
